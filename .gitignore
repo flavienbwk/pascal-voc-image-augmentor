@@ -1,0 +1,7 @@
+dataset/images/*
+dataset/annotations/*
+!dataset/images/.gitkeep
+!dataset/annotations/.gitkeep
+
+dataset-augmented/*
+!dataset-augmented/.gitkeep
