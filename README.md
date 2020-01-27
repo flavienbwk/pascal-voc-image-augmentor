@@ -32,6 +32,12 @@ Images will be saved into `dataset-visualization/`
 docker-compose up visualize
 ```
 
+Here is an example :
+
+![](illustration.jpg)
+
+> Top left you can see the original image, and then the augmented images. You can custom the augmentation parameters [in augment.py](./augment.py) at line **180**.
+
 ## References
 
 1. Part of this project is an adaptation of the [asetkn's tutorial](https://github.com/asetkn/Tutorial-Image-and-Multiple-Bounding-Boxes-Augmentation-for-Deep-Learning-in-4-Steps/blob/master/Tutorial-Image-and-Multiple-Bounding-Boxes-Augmentation-for-Deep-Learning-in-4-Steps.ipynb) on how to perform image augmentation with Pascal VOC annotated images
