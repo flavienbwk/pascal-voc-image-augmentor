@@ -3,6 +3,7 @@ from imutils import paths
 from pathlib import Path
 import imgaug as ia
 from math import floor
+from math import isnan
 from imgaug.augmentables.bbs import BoundingBox, BoundingBoxesOnImage
 from imgaug import augmenters
 import imageio
@@ -128,21 +129,24 @@ def get_xml_from_dataframe(origin_annotation_path, labels_df):
     for object_et in objects_et:
         annotation_et.remove(object_et)
     filename_et = annotation_et.find("filename")
-    filename_et.text = labels_df["filename"]
+    filename_et.text = labels_df.iloc[0]["filename"]
     width_et = annotation_et.find("size").find("width")
-    width_et.text = str(labels_df["width"])
+    width_et.text = str(labels_df.iloc[0]["width"])
     height_et = annotation_et.find("size").find("height")
-    height_et.text = str(labels_df["height"])
-    object_et = ET.SubElement(annotation_et, 'object')
-    ET.SubElement(object_et, 'name').text = labels_df["class"]
-    ET.SubElement(object_et, 'pose').text = "Unspecified"
-    ET.SubElement(object_et, 'truncated').text = "0"
-    ET.SubElement(object_et, 'difficult').text = "0"
-    bndbox_et = ET.SubElement(object_et, 'bndbox')
-    ET.SubElement(bndbox_et, 'xmin').text = str(floor(labels_df["xmin"]))
-    ET.SubElement(bndbox_et, 'ymin').text = str(floor(labels_df["ymin"]))
-    ET.SubElement(bndbox_et, 'xmax').text = str(floor(labels_df["xmax"]))
-    ET.SubElement(bndbox_et, 'ymax').text = str(floor(labels_df["ymax"]))
+    height_et.text = str(labels_df.iloc[0]["height"])
+    for label_df_index in labels_df.index:
+        label_df = labels_df.iloc[label_df_index]
+        if (isnan(label_df["xmin"]) == False):
+            object_et = ET.SubElement(annotation_et, 'object')
+            ET.SubElement(object_et, 'name').text = label_df["class"]
+            ET.SubElement(object_et, 'pose').text = "Unspecified"
+            ET.SubElement(object_et, 'truncated').text = "0"
+            ET.SubElement(object_et, 'difficult').text = "0"
+            bndbox_et = ET.SubElement(object_et, 'bndbox')
+            ET.SubElement(bndbox_et, 'xmin').text = str(floor(label_df["xmin"]))
+            ET.SubElement(bndbox_et, 'ymin').text = str(floor(label_df["ymin"]))
+            ET.SubElement(bndbox_et, 'xmax').text = str(floor(label_df["xmax"]))
+            ET.SubElement(bndbox_et, 'ymax').text = str(floor(label_df["ymax"]))
     return tree
 
 
@@ -199,7 +203,7 @@ for image_path in images_path:
         if (len(augmented_image_df.index)):
             xml_annotations_et = get_xml_from_dataframe(
                 image_annotation_path,
-                augmented_image_df.iloc[0]
+                augmented_image_df
             )
             xml_annotations_et.write(image_annotation_dest_path)
 

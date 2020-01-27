@@ -14,7 +14,6 @@ DATASET_AUGM_IMAGES_DIR = "{}/images".format(DATASET_AUGM_DIR)
 DATASET_AUGM_ANNOTS_DIR = "{}/annotations".format(DATASET_AUGM_DIR)
 DATASET_VISU_DIR = "/usr/dataset-visualization"
 DATASET_VISU_IMAGES_DIR = "{}/images".format(DATASET_VISU_DIR)
-DATASET_VISU_ANNOTS_DIR = "{}/annotations".format(DATASET_VISU_DIR)
 
 
 def create_directory(path, remove_dir=False):
@@ -64,8 +63,6 @@ def decode_image_annotation(path_annotation):
     return xml_df
 
 if (create_directory(DATASET_VISU_IMAGES_DIR) == False):
-    exit(1)
-if (create_directory(DATASET_VISU_ANNOTS_DIR) == False):
     exit(1)
 
 images_path = list(paths.list_images(DATASET_AUGM_IMAGES_DIR))
