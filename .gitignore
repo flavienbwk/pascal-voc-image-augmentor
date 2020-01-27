@@ -5,3 +5,6 @@ dataset/annotations/*
 
 dataset-augmented/*
 !dataset-augmented/.gitkeep
+
+dataset-visualization/*
+!dataset-visualization/.gitkeep

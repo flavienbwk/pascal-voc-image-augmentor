@@ -20,6 +20,18 @@ Augment images present in `dataset/images/` considering their **Pascal VOC** ann
     docker-compose up augment
     ```
 
+## Visualize
+
+You can run the following command then to visualize newly annotated images that were copied in `dataset-augmented/`
+
+A red square will be drawn around the bounding boxes described in the annotations
+
+Images will be saved into `dataset-visualization/`
+
+```bash
+docker-compose up visualize
+```
+
 ## References
 
-1. This project is an adaptation of the [asetkn's tutorial](https://github.com/asetkn/Tutorial-Image-and-Multiple-Bounding-Boxes-Augmentation-for-Deep-Learning-in-4-Steps/blob/master/Tutorial-Image-and-Multiple-Bounding-Boxes-Augmentation-for-Deep-Learning-in-4-Steps.ipynb) on how to perform image augmentation with Pascal VOC annotated images
+1. Part of this project is an adaptation of the [asetkn's tutorial](https://github.com/asetkn/Tutorial-Image-and-Multiple-Bounding-Boxes-Augmentation-for-Deep-Learning-in-4-Steps/blob/master/Tutorial-Image-and-Multiple-Bounding-Boxes-Augmentation-for-Deep-Learning-in-4-Steps.ipynb) on how to perform image augmentation with Pascal VOC annotated images

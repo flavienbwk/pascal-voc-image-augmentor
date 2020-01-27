@@ -11,3 +11,12 @@ services:
             - ./dataset-augmented:/usr/dataset-augmented
         environment: 
             AUG_NB_AUGMENTATION_PER_IMAGE: 5
+
+    visualize:
+        build: .
+        user: ${CURRENT_UID}
+        command: python3.7 /usr/scripts/visualize.py
+        volumes:
+            - ./scripts:/usr/scripts:ro
+            - ./dataset-augmented:/usr/dataset-augmented:ro
+            - ./dataset-visualization:/usr/dataset-visualization

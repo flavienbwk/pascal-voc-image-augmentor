@@ -1,7 +1,6 @@
 import os
 from imutils import paths
 from pathlib import Path
-from glob import glob
 import imgaug as ia
 from math import floor
 from imgaug.augmentables.bbs import BoundingBox, BoundingBoxesOnImage
@@ -10,8 +9,6 @@ import imageio
 import pandas
 import numpy
 import re
-import os
-import glob
 import xml.etree.ElementTree as ET
 import shutil
 
