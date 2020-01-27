@@ -143,10 +143,14 @@ def get_xml_from_dataframe(origin_annotation_path, labels_df):
             ET.SubElement(object_et, 'truncated').text = "0"
             ET.SubElement(object_et, 'difficult').text = "0"
             bndbox_et = ET.SubElement(object_et, 'bndbox')
-            ET.SubElement(bndbox_et, 'xmin').text = str(floor(label_df["xmin"]))
-            ET.SubElement(bndbox_et, 'ymin').text = str(floor(label_df["ymin"]))
-            ET.SubElement(bndbox_et, 'xmax').text = str(floor(label_df["xmax"]))
-            ET.SubElement(bndbox_et, 'ymax').text = str(floor(label_df["ymax"]))
+            ET.SubElement(bndbox_et, 'xmin').text = str(
+                floor(label_df["xmin"]))
+            ET.SubElement(bndbox_et, 'ymin').text = str(
+                floor(label_df["ymin"]))
+            ET.SubElement(bndbox_et, 'xmax').text = str(
+                floor(label_df["xmax"]))
+            ET.SubElement(bndbox_et, 'ymax').text = str(
+                floor(label_df["ymax"]))
     return tree
 
 
@@ -175,18 +179,59 @@ for image_path in images_path:
     shutil.copy(image_annotation_path,
                 "{}/{}".format(DATASET_AUGM_ANNOTS_DIR, image_annotation_path_data.name))
     for i in range(0, AUG_NB_AUGMENTATION_PER_IMAGE):
-        # This setup of augmentation parameters will pick 2 of
-        # the 7 given augmenters and apply them in random order.
-        aug_config = augmenters.SomeOf(2, [
-            augmenters.Affine(scale=(0.5, 1.5)),
-            augmenters.Affine(rotate=(-60, 60)),
-            augmenters.Affine(translate_percent={
-                              "x": (-0.3, 0.3), "y": (-0.3, 0.3)}),
-            augmenters.Fliplr(1),
-            augmenters.Multiply((0.5, 1.5)),
-            augmenters.GaussianBlur(sigma=(1.0, 3.0), deterministic=True),
-            augmenters.AdditiveGaussianNoise(scale=(0.03*255, 0.05*255))
-        ])
+        # This setup of augmentation parameters will pick 1 to 4
+        # of the given augmenters and apply them in random order.
+        sometimes = lambda aug: augmenters.Sometimes(0.5, aug)
+        aug_config = augmenters.SomeOf(
+            (1, 4),
+            [
+                augmenters.Affine(scale=(0.5, 1.5)),
+                augmenters.Affine(rotate=(-60, 60)),
+                augmenters.Affine(translate_percent={
+                                  "x": (-0.3, 0.3), "y": (-0.3, 0.3)}),
+                augmenters.Fliplr(1),
+                sometimes(
+                    augmenters.Superpixels(
+                        p_replace=(0, 1.0),
+                        n_segments=(20, 200)
+                    )
+                ),
+                augmenters.OneOf([
+                    augmenters.GaussianBlur((0, 3.0)),
+                    augmenters.AverageBlur(k=(2, 7)),
+                    augmenters.MedianBlur(k=(3, 11)),
+                ]),
+                augmenters.Sharpen(alpha=(0, 1.0), lightness=(0.75, 1.5)),
+                augmenters.Emboss(alpha=(0, 1.0), strength=(0, 2.0)),
+                sometimes(augmenters.OneOf([
+                    augmenters.EdgeDetect(alpha=(0, 0.7)),
+                    augmenters.DirectedEdgeDetect(
+                        alpha=(0, 0.7), direction=(0.0, 1.0)
+                    ),
+                ])),
+                augmenters.AdditiveGaussianNoise(
+                    loc=0, scale=(0.0, 0.05*255), per_channel=0.5
+                ),
+                augmenters.OneOf([
+                    augmenters.Dropout((0.01, 0.1), per_channel=0.5),
+                    augmenters.CoarseDropout(
+                        (0.03, 0.15), size_percent=(0.02, 0.05),
+                        per_channel=0.2
+                    ),
+                ]),
+                augmenters.Invert(0.05, per_channel=True),
+                augmenters.Add((-10, 10), per_channel=0.5),
+                augmenters.Multiply((0.5, 1.5), per_channel=0.5),
+                augmenters.ContrastNormalization((0.5, 2.0), per_channel=0.5),
+                augmenters.Grayscale(alpha=(0.0, 1.0)),
+                sometimes(
+                    augmenters.ElasticTransformation(
+                        alpha=(0.5, 3.5), sigma=0.25)
+                ),
+                sometimes(augmenters.PiecewiseAffine(scale=(0.01, 0.05)))
+            ],
+            random_order=True
+        )
         aug_file_suffix = '_aug_{}'.format(i)
         augmented_image_df = augment_image(
             labels_df,

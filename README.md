@@ -36,7 +36,7 @@ Here is an example :
 
 ![](illustration.jpg)
 
-> Top left you can see the original image, and then the augmented images. You can customize the augmentation parameters [in augment.py](./augment.py) at line **180**.
+> Top left you can see the original image, and then the augmented images. You can customize the augmentation parameters [in augment.py](./augment.py) at line **185**.
 
 ## References
 
