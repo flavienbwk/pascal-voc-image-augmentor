@@ -233,23 +233,26 @@ for image_path in images_path:
             random_order=True
         )
         aug_file_suffix = '_aug_{}'.format(i)
-        augmented_image_df = augment_image(
-            labels_df,
-            DATASET_IMAGES_DIR,
-            DATASET_AUGM_IMAGES_DIR,
-            aug_file_suffix,
-            aug_config
-        )
-        image_annotation_dest_path = "{}/{}{}{}".format(
-            DATASET_AUGM_ANNOTS_DIR,
-            stem, aug_file_suffix,
-            image_annotation_path_data.suffix
-        )
-        if (len(augmented_image_df.index)):
-            xml_annotations_et = get_xml_from_dataframe(
-                image_annotation_path,
-                augmented_image_df
+        try:
+            augmented_image_df = augment_image(
+                labels_df,
+                DATASET_IMAGES_DIR,
+                DATASET_AUGM_IMAGES_DIR,
+                aug_file_suffix,
+                aug_config
             )
-            xml_annotations_et.write(image_annotation_dest_path)
+            image_annotation_dest_path = "{}/{}{}{}".format(
+                DATASET_AUGM_ANNOTS_DIR,
+                stem, aug_file_suffix,
+                image_annotation_path_data.suffix
+            )
+            if (len(augmented_image_df.index)):
+                xml_annotations_et = get_xml_from_dataframe(
+                    image_annotation_path,
+                    augmented_image_df
+                )
+                xml_annotations_et.write(image_annotation_dest_path)
+        except:
+            print("Failed to augment {}".format(aug_file_suffix))
 
     print("OK.")

@@ -10,7 +10,7 @@ services:
             - ./dataset:/usr/dataset:ro
             - ./dataset-augmented:/usr/dataset-augmented
         environment: 
-            AUG_NB_AUGMENTATION_PER_IMAGE: 5
+            AUG_NB_AUGMENTATION_PER_IMAGE: 10
 
     visualize:
         build: .
