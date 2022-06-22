@@ -3,4 +3,4 @@ pathlib==1.0.1
 imgaug==0.3.0
 imageio==2.6.1
 pandas==0.25.3
-numpy==1.18.1
+numpy==1.22.0
